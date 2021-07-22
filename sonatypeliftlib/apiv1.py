@@ -9,37 +9,41 @@ import hashlib
 API_VERSION = 1
 
 class ApiV1:
-    def __init__(self, name):
-        args = sys.argv
-
+    def __init__(self, name, args):
+        self.output = sys.stdout
         self.name = name
 
         if (len(args) < 4):
-            self.info()
+            self.__info()
             sys.exit()
+            return
 
         self.path = args[1]
         self.commit = args[2]
         self.command = args[3]
 
-    def info(self):
+    # This method is mainly used for testing to alter the output 
+    def setoutput(self, out):
+        self.output = out
+
+    def __info(self):
         info = { "version": API_VERSION, "name": self.name }
-        print(json.dumps(info))
+        print(json.dumps(info), file = self.output)
 
-    def version(self):
-        print(API_VERSION)
+    def __version(self):
+        print(API_VERSION, file = self.output)
 
-    def tool_name(self):
-        print(self.name)
+    def __tool_name(self):
+        print(self.name, file = self.output)
 
-    def _tool_run(self):
+    def __tool_run(self):
         response = self.tool_run()
-        print(json.dumps(response, default=lambda o: o.__dict__))
+        print(json.dumps(response, default=lambda o: o.__dict__), file = self.output)
 
     def tool_run(self):
         ApiV1.must_implement()
 
-    def _tool_applicable(self):
+    def __tool_applicable(self):
         response = self.tool_applicable()
         print(json.dumps(response))
 
@@ -47,18 +51,14 @@ class ApiV1:
         ApiV1.must_implement()
 
     def service(self):
-        args = sys.argv
-        if (len(args) < 4):
-            self.info()
+        if self.command == "run":
+            self.__tool_run()
+        elif self.command == "applicable":
+            self.__tool_applicable()
+        elif self.command == "name":
+            self.__tool_name()
         else:
-            if self.command == "run":
-                self._tool_run()
-            elif self.command == "applicable":
-                self._tool_applicable()
-            elif self.command == "name":
-                self.tool_name()
-            else:
-                self.version()
+            self.__version()
 
     @staticmethod
     def must_implement():
@@ -74,15 +74,24 @@ class ApiV1:
         return True
 
     @staticmethod
-    def file_exists_recursive(path, file):
-        for entry in os.scandir(path):
+    def file_exists_in_path_recursive(path, file):
+        for (dirpath, dirnames, entry) in os.walk(path):
             if entry.is_file() and entry.name == file:
                 return True
         return False
 
     @staticmethod
+    def path_has_extension_recursive(path, extension):
+        for (dirpath, dirnames, filenames) in os.walk(path):
+            for file in filenames:
+                if file.endswith(extension):
+                    return True
+
+        return False
+        
+    @staticmethod
     def run_with_args(command, arguments):
-        to_execute = command
+        to_execute = [command]
         to_execute.extend(arguments)
         return subprocess.run(to_execute, capture_output=True)
 
