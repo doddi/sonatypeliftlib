@@ -3,8 +3,6 @@ import json
 import sys
 import subprocess
 import os
-import shutil
-import hashlib
 
 API_VERSION = 1
 
@@ -41,14 +39,14 @@ class ApiV1:
         print(json.dumps(response, default=lambda o: o.__dict__), file = self.output)
 
     def tool_run(self):
-        ApiV1.must_implement()
+        ApiV1.__must_implement()
 
     def __tool_applicable(self):
         response = self.tool_applicable()
         print(json.dumps(response))
 
     def tool_applicable(self):
-        ApiV1.must_implement()
+        ApiV1.__must_implement()
 
     def service(self):
         if self.command == "run":
@@ -61,7 +59,7 @@ class ApiV1:
             self.__version()
 
     @staticmethod
-    def must_implement():
+    def __must_implement():
         print("This method must be overriden for your tool")
         sys.exit()
 
@@ -71,39 +69,7 @@ class ApiV1:
 
     @staticmethod
     def is_applicable():
-        return True
-
-    @staticmethod
-    def file_exists_in_path_recursive(path, file):
-        for (dirpath, dirnames, entry) in os.walk(path):
-            if entry.is_file() and entry.name == file:
-                return True
-        return False
-
-    @staticmethod
-    def path_has_extension_recursive(path, extension):
-        for (dirpath, dirnames, filenames) in os.walk(path):
-            for file in filenames:
-                if file.endswith(extension):
-                    return True
-
-        return False
-        
-    @staticmethod
-    def run_with_args(command, arguments):
-        to_execute = [command]
-        to_execute.extend(arguments)
-        return subprocess.run(to_execute, capture_output=True)
-
-    @staticmethod
-    def reoutput_subprocess_io(executed, res):
-        if len(res.stdout) > 0 or len(res.stderr) > 0:
-            print("Called: " + str(executed), file=sys.stderr)
-        if len(res.stdout) > 0:
-            print(res.stdout.decode("utf-8"), file=sys.stderr)
-        if len(res.stderr) > 0:
-            print(res.stderr.decode("utf-8"), file=sys.stderr)
-
+        return True     
 
 class ToolNote:
     def __init__(self, type, message, file, line, details_url):
