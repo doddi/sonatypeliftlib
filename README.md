@@ -9,8 +9,6 @@ Sonatype Lift Lib contains helper methods to easily get up and running with Sona
 from sonatypeliftlib.apiv1 import ApiV1, ToolNote
 
 class ApiV1Test(ApiV1):
-    pass
-
     def tool_applicable(self):
         return ApiV1.is_applicable()
 
@@ -25,7 +23,7 @@ class ApiV1Test(ApiV1):
         return tool_notes
 
 def main():
-    tool = ApiV1Test("Test")
+    tool = ApiV1Test("Test", sys.argv)
     tool.service()
 
 if __name__ == "__main__":
