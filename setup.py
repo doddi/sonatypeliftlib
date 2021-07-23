@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="sonatypeliftlib",
-    version="0.0.3",
+    version="0.0.4",
     author="Mark Dodgson",
     author_email="mark.dodgson@googlemail.com",
     license='MIT',

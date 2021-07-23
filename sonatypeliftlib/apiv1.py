@@ -80,10 +80,12 @@ class ToolNote:
         if line != None:
             self.line = line
         else:
-            self.line = 0
+            self.line = 1
 
         if details_url != None:
             self.details_url = details_url
         if file != None:
             self.file = file
+        else:
+            self.file = "unknown"
 

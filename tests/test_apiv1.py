@@ -47,7 +47,7 @@ def test_tool_run():
     api = ApiV1Test('run')
     api.service()
 
-    assert api.getoutput() == """[{"type": "Foo", "message": "Foo Message", "line": 0}, {"type": "Bar", "message": "Bar Message", "line": 1}]""".strip()
+    assert api.getoutput() == """[{"type": "Foo", "message": "Foo Message", "line": 1, "file": "unknown"}, {"type": "Bar", "message": "Bar Message", "line": 1, "file": "unknown"}]""".strip()
 
 class ApiV1Test(ApiV1):
     def __init__(self, command):
