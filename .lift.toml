@@ -1,0 +1,3 @@
+setup = ".lift/setup.sh"
+tools = []
+customTools = [".lift/pycodestyle.py"]
